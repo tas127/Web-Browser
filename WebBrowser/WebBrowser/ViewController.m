@@ -19,6 +19,8 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     [self.webView setDelegate:self];
+    userDefaults = [NSUserDefaults standardUserDefaults];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -42,15 +44,26 @@
 }
 
 - (IBAction)forward:(id)sender {
-    [self.webView goBack];
+    [self.webView goForward];
 }
 
 - (IBAction)back:(id)sender {
-    [self.webView goForward];
+    [self.webView goBack];
 }
 
 - (void) webViewDidFinishLoad:(UIWebView *)webView {
     [self.typeField setText:webView.request.URL.absoluteString];
+}
+
+- (IBAction)tapHome:(id)sender {
+    NSString *homePage = [userDefaults StringforKey:@"Home Page"];
+    if(homePage) {
+        NSURL *url = [NSURL URLWithString:homePage];
+        NSURLRequest *urlRequest = [[NSURLRequest alloc] initWithURL:url];
+        [self.webView loadRequest:urlRequest];
+    } else {
+        [userDefaults setObject:self.typeField.text forKey:@"Home Page"];
+    }
 }
 
 @end
